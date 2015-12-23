@@ -174,6 +174,7 @@ public class SQLDBInit {
             for (int i = 0; i<numOfTransactionsForClient; i++){
 //                // "insert into users (name, age, isAdmin, createdDate) values ('Ivan', '1', true, '1990-03-20');
                 int transactionAmount = new Random().nextInt(MAX_GENERATED_VALUE_OF_ACCOUNT/10);
+                if (transactionAmount==0) transactionAmount=1;
                 int toAccountID = accountsIDs.get(new Random().nextInt(accountsIDs.size()));
 
                 // ≈сли денег не хватает то пропускаем цикл
