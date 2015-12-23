@@ -46,7 +46,11 @@ public class Console {
 
     private static void adminMenu() {
         System.out.println("welcome to the administration console");
-        System.out.println("you can: nothing");
+        System.out.println(
+                "enter:\n" +
+                "\"list\" to view list of clients\n" +
+                "client ID to select the client for the next operations\n" +
+                "");
     }
 
     private static String getUserAnswer() {
