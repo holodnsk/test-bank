@@ -5,11 +5,12 @@ import java.sql.Statement;
 
 public class DBStatement {
     private static Statement statement;
+    private static Connection connection;
 
     public static Statement getStatement() {
         // TODO пофиксить для многопоточности
         if (statement!= null) return statement;
-        Connection connection = null;
+
         Statement statement = null;
         try {
             //Загружаем драйвер
@@ -29,10 +30,19 @@ public class DBStatement {
     }
 
     public static void closeStatement(){
-        try {
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
