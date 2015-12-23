@@ -1,4 +1,5 @@
 import java.io.InputStreamReader;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ public class Console {
 
         String userAnswer = getUserAnswer();
         if ("exit".equals(userAnswer)) return;
-        if ("admin".equals(userAnswer)) adminMenu();
+        if ("admin".equals(userAnswer)) rootAdminMenu();
         else {
             try {
                 uID = Integer.parseInt(userAnswer);
@@ -26,10 +27,10 @@ public class Console {
                     clientMenu();
                     welcomeMenu();
                 } else {
-                    System.out.println("You will be too accuracy");
+                    accuracyWarning();
                 }
             } catch (NumberFormatException e) {
-                System.out.println("You will be too accuracy");
+                accuracyWarning();
             }
             // TODO проверить что введенный uID есть в БД
 
@@ -38,19 +39,58 @@ public class Console {
 
     }
 
+    private static void accuracyWarning() {
+        System.out.println("You will be too accuracy");
+    }
+
     private static void clientMenu() throws SQLException {
         System.out.println("welcome "+Database.getClientName(uID));
         System.out.println("you can: nothing");
 
     }
 
-    private static void adminMenu() {
+    // TODO убрать приветсвие каждлый раз
+    private static void rootAdminMenu() throws SQLException {
         System.out.println("welcome to the administration console");
         System.out.println(
                 "enter:\n" +
-                "\"list\" to view list of clients\n" +
-                "client ID to select the client for the next operations\n" +
-                "");
+                        "\"list\" to view list of clients\n" +
+                        "client ID to select the client for the next operations\n" +
+                        "\"logout\" to change user\n" +
+                        "\"exit\" to exit terminal\n" +
+                        "");
+        String userAnswer  =getUserAnswer();
+        if ("exit".equals(userAnswer)) exitProgramm();
+        else if ("logout".equals(userAnswer)) welcomeMenu();
+        else if ("list".equals(userAnswer)) System.out.println(getListUser());
+        else try {
+                Integer parseduID = Integer.parseInt(userAnswer);
+
+            } catch (NumberFormatException e) {
+                accuracyWarning();
+            }
+
+        rootAdminMenu();
+    }
+
+    private static String getListUser() throws SQLException {
+        ResultSet rs = Database.getStatement().executeQuery("SELECT * FROM clients");
+        StringBuilder stringBuilder = new StringBuilder("ID\tNAME\n");
+
+        while (rs.next()) {
+            stringBuilder.append(rs.getInt(1));
+            stringBuilder.append("\t");
+            stringBuilder.append(rs.getString(2));
+            stringBuilder.append("\n");
+        };
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+
+        return stringBuilder.toString();
+    }
+
+    private static void exitProgramm() {
+        Database.closeStatement();
+        System.exit(0);
     }
 
     private static String getUserAnswer() {
