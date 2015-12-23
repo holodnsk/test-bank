@@ -11,31 +11,42 @@ public class Console {
 
 
     public static void welcomeMenu() throws SQLException {
-        // TODO надо дать реальный диапазон возможных ID из БД
-        System.out.println("Enter you login: \"admin\" or range of values of user ID 1-"+SQLDBInit.NUM_CLIENTS);
+        // TODO надо дать реальный диапазон возможных uID из БД
+        int minUID = Database.getMinUID();
+        int maxUID = Database.getMaxUID();
+        System.out.println("Enter you login: \"admin\" or range of values of user ID "+minUID+"-"+maxUID+ " or type \"exit\" any time to exit");
 
         String userAnswer = getUserAnswer();
+        if ("exit".equals(userAnswer)) return;
         if ("admin".equals(userAnswer)) adminMenu();
         else {
             try {
                 uID = Integer.parseInt(userAnswer);
+                if (uID>= Database.getMinUID() && uID<=Database.getMaxUID()) {
+                    clientMenu();
+                    welcomeMenu();
+                } else {
+                    System.out.println("You will be too accuracy");
+                }
             } catch (NumberFormatException e) {
-                System.out.println("try again");
-                welcomeMenu();
+                System.out.println("You will be too accuracy");
             }
             // TODO проверить что введенный uID есть в БД
-            userMenu();
+
+            welcomeMenu();
         }
 
     }
 
-    private static void userMenu() {
-        System.out.println("welcome ");
+    private static void clientMenu() throws SQLException {
+        System.out.println("welcome "+Database.getClientName(uID));
+        System.out.println("you can: nothing");
 
     }
 
     private static void adminMenu() {
         System.out.println("welcome to the administration console");
+        System.out.println("you can: nothing");
     }
 
     private static String getUserAnswer() {

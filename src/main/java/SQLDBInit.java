@@ -5,7 +5,7 @@ import java.util.Date;
 // TODO узнать как правильно инициализировать БД и переделать
 public class SQLDBInit {
 
-    public static final int NUM_MAX_ACCOUNTS_EVER_CLIENT = 2;//11;
+    public static final int NUM_MAX_ACCOUNTS_EVER_CLIENT = 5;//11;
     public static final int NUM_CLIENTS = 3;//100;
     public static final int NUM_MAX_TRANSACTIONS_EVER_ACCOUNT = 3;//100;
     public static final int MAX_GENERATED_VALUE_OF_ACCOUNT= 1000;
