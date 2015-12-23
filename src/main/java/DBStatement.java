@@ -11,7 +11,6 @@ public class DBStatement {
         // TODO пофиксить для многопоточности
         if (statement!= null) return statement;
 
-        Statement statement = null;
         try {
             //Загружаем драйвер
             Class.forName("com.mysql.jdbc.Driver");
