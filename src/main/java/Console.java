@@ -12,10 +12,10 @@ public class Console {
 
 
     public static void welcomeMenu() throws SQLException {
-        // TODO надо дать реальный диапазон возможных uID из БД
-        int minUID = Database.getMinUID();
-        int maxUID = Database.getMaxUID();
-        System.out.println("Enter you login: \"admin\" or range of values of user ID "+minUID+"-"+maxUID+ " or type \"exit\" any time to exit");
+
+        System.out.println("Enter you login: \"admin\" or range of values of user ID "+
+                Database.getMinUID() +"-"+ Database.getMaxUID() +
+                " or type \"exit\" any time to exit");
 
         String userAnswer = getUserAnswer();
         if ("exit".equals(userAnswer)) return;
@@ -32,8 +32,6 @@ public class Console {
             } catch (NumberFormatException e) {
                 accuracyWarning();
             }
-            // TODO проверить что введенный uID есть в БД
-
             welcomeMenu();
         }
 
@@ -43,34 +41,92 @@ public class Console {
         System.out.println("You will be too accuracy");
     }
 
+    // TODO не смотря на то что в задании нет возможности клиенту делать транзакции это надо сделать
     private static void clientMenu() throws SQLException {
         System.out.println("welcome "+Database.getClientName(uID));
         System.out.println("you can: nothing");
 
     }
 
-    // TODO убрать приветсвие каждлый раз
+    // TODO убрать приветствное сообщение каждлый раз
     private static void rootAdminMenu() throws SQLException {
         System.out.println("welcome to the administration console");
         System.out.println(
                 "enter:\n" +
-                        "\"list\" to view list of clients\n" +
-                        "client ID to select the client for the next operations\n" +
-                        "\"logout\" to change user\n" +
-                        "\"exit\" to exit terminal\n" +
+                        "\"clients\" or \"c\" to view list of clients\n" +
+                        "client ID to view list of accounts\n" +
+                        "\"transactions\" or \"t\" to view transactions\n" +
+                        "\"logout\" or \"l\" to change user\n" +
+                        "\"exit\" or \"e\" to exit terminal\n" +
                         "");
         String userAnswer  =getUserAnswer();
-        if ("exit".equals(userAnswer)) exitProgramm();
-        else if ("logout".equals(userAnswer)) welcomeMenu();
-        else if ("list".equals(userAnswer)) System.out.println(getListUser());
+        if ("exit".equals(userAnswer) || "e".equals(userAnswer)) exitProgramm();
+        else if ("logout".equals(userAnswer) || "l".equals(userAnswer)) welcomeMenu();
+        else if ("clients".equals(userAnswer) || "c".equals(userAnswer)) System.out.println(getListUser());
+        else if ("transactions".equals(userAnswer) || "t".equals(userAnswer)) viewTransactions();
         else try {
                 Integer parseduID = Integer.parseInt(userAnswer);
+                System.out.println(getAccountsOfClient(parseduID));
 
             } catch (NumberFormatException e) {
                 accuracyWarning();
             }
 
         rootAdminMenu();
+    }
+
+    private static void viewTransactions() throws SQLException {
+        System.out.println("enter account ID to view transactions or" +
+                        "\"logout\" or \"l\" to change user\n" +
+                        "\"exit\" or \"e\" to exit terminal\n" +
+                        "");
+        String userAnswer  =getUserAnswer();
+        if ("exit".equals(userAnswer) || "e".equals(userAnswer)) exitProgramm();
+        else if ("logout".equals(userAnswer) || "l".equals(userAnswer)) welcomeMenu();
+        else try {
+                Integer parseduID = Integer.parseInt(userAnswer);
+                System.out.println(getTransactionsOfAccount(parseduID));
+
+            } catch (NumberFormatException e) {
+                accuracyWarning();
+            }
+        rootAdminMenu();
+    }
+
+    private static String getTransactionsOfAccount(Integer accountID) throws SQLException {
+        ResultSet rs = Database.getStatement().executeQuery("SELECT * FROM transactions WHERE id="+accountID);
+
+        StringBuilder stringBuilder = new StringBuilder("Date\t\tfrom Account\tto Account\tamount\n");
+
+        while (rs.next()) {
+            stringBuilder.append(rs.getString(5));
+            stringBuilder.append("\t");
+            stringBuilder.append(rs.getInt(2));
+            stringBuilder.append("\t\t\t\t");
+            stringBuilder.append(rs.getInt(3));
+            stringBuilder.append("\t\t\t");
+            stringBuilder.append(rs.getInt(4));
+            stringBuilder.append("\n");
+        };
+        stringBuilder.append("===========================================");
+
+        return stringBuilder.toString();
+    }
+
+    private static String getAccountsOfClient(Integer uID) throws SQLException {
+        ResultSet rs = Database.getStatement().executeQuery("SELECT * FROM accounts WHERE id="+uID);
+
+        StringBuilder stringBuilder = new StringBuilder("Account\tAmount\n");
+
+        while (rs.next()) {
+            stringBuilder.append(rs.getInt(1));
+            stringBuilder.append("\t");
+            stringBuilder.append(rs.getInt(3));
+            stringBuilder.append("\n");
+        };
+        stringBuilder.append("============================");
+
+        return stringBuilder.toString();
     }
 
     private static String getListUser() throws SQLException {
@@ -83,7 +139,7 @@ public class Console {
             stringBuilder.append(rs.getString(2));
             stringBuilder.append("\n");
         };
-        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        stringBuilder.append("============================");
 
         return stringBuilder.toString();
     }
