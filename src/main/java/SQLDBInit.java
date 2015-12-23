@@ -13,9 +13,9 @@ public class SQLDBInit {
     // TODO заменить Date
     private static final Date START_DATE_OF_TRANSACTIONS = new Date(2015,0,1);
 
-    private final static String dropDB = "DROP DATABASE IF EXISTS kholodkovDB;";
-    private final static String createDB = "CREATE DATABASE kholodkovDB DEFAULT CHARACTER SET 'utf8';";
-    private final static String useDB = "USE kholodkovDB;";
+    private final static String dropDB = "DROP DATABASE IF EXISTS testTaskBankDB;";
+    private final static String createDB = "CREATE DATABASE testTaskBankDB DEFAULT CHARACTER SET 'utf8';";
+    private final static String useDB = "USE testTaskBankDB;";
 
     // запросы для создания таблиц
     //TODO все ID надо генерить непоследовательно, это должно быть случайное и уникальное число
