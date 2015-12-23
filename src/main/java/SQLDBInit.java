@@ -79,48 +79,21 @@ public class SQLDBInit {
             "2015-11-09","2015-11-10","2015-11-11","2015-11-12","2015-11-13","2015-11-14","2015-11-15","2015-11-16",
             "2015-11-17","2015-11-18","2015-11-19","2015-11-20","2015-11-21","2015-11-22","2015-11-23","2015-11-24",
             "2015-11-25","2015-11-26","2015-11-27","2015-11-28","2015-11-29","2015-11-30","2015-12-01"
-            );
+    );
 
 
-    public static void init() {
+    public static void init() throws SQLException {
 
-        Connection connection = null;
-        Statement statement = null;
-        try {
-            //Загружаем драйвер
-            Class.forName("com.mysql.jdbc.Driver");
 
-            // варим стэйтмент для отправки запросов нашей БД
-            String url = "jdbc:mysql://localhost:3306/";
-            connection = DriverManager.getConnection(url, "root", "root");
-            statement = connection.createStatement();
+        Statement statement = DBStatement.getStatement();
 
-            reNewDB(statement);
+        reNewDB(statement);
 
-            fillClientsTableRandomNames(statement);
-            fillAccountsTableRandomData(statement);
-            fillTransactionsTableRandomData(statement);
+        fillClientsTableRandomNames(statement);
+        fillAccountsTableRandomData(statement);
+        fillTransactionsTableRandomData(statement);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("can`t connect to DB localhost:3306 root:root");
-        } finally {
-            //позакрываем теперь все
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+
 
     }
 
